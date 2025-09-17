@@ -94,5 +94,4 @@ test('New user is not created with Empty Last name field', async ({ page }) => {
   await page.reload()
   await addCustomer.clickCustomersListLink()
   await addCustomer.elementTextDataNotEqual(customersListPage.getCustomerLastName, firstName)
-
 });
