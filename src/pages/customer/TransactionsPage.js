@@ -8,7 +8,7 @@ export class TransactionsPage {
     this.headerSecondCell = this.tableHeader.getByRole('cell').nth(1);
     this.headerThirdCell = this.tableHeader.getByRole('cell').nth(2);
     this.firstRow = page.getByRole('row').nth(1);
-    this.firstRowAmountCell = this.firstRow.getByRole('cell').nth(1);
+    this.firstRowAmountCell = page.locator('tbody tr').last().locator('td').nth(1);
     this.firstRowTypeCell = this.firstRow.getByRole('cell').nth(2);
   }
 
@@ -46,4 +46,9 @@ export class TransactionsPage {
   async assertHeaderThirdCellContainsText(text) {
     await expect(this.headerThirdCell).toContainText(text);
   }
+
+  async assertFirstRowAmountVisible() {
+    await expect(this.firstRowAmountCell).toBeVisible();
+  }
+
 }

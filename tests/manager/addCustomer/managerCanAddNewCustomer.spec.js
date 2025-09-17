@@ -1,7 +1,36 @@
 import { test } from '@playwright/test';
 import { faker } from '@faker-js/faker';
+import { AddCustomerPage } from '../../../src/pages/manager/AddCustomerPage'
+import { CustomersListPage } from '../../../src/pages/manager/CustomersListPage';
+
+let addCustomer
+let customersListPage
+let firstName
+let lastName
+let postalCode
+
+test.beforeEach(async ({ page }) => {
+  /* 
+  Pre-conditons:
+  1. Open Add Customer page.
+  2. Fill the First Name.  
+  3. Fill the Last Name.
+  4. Fill the Postal Code.
+  5. Click [Add Customer].
+  */
+
+  addCustomer = new AddCustomerPage(page)
+  customersListPage = new CustomersListPage(page)
+  firstName = faker.person.firstName()
+  lastName = faker.person.lastName()
+  postalCode = faker.location.zipCode()
+
+});
 
 test('Assert manager can add new customer', async ({ page }) => {
+
+
+
   /* 
   Test:
   1. Open add customer page by link
@@ -26,4 +55,44 @@ test('Assert manager can add new customer', async ({ page }) => {
   2. Do not rely on the customer row id for the steps 8-11. 
     Use the ".last()" locator to get the last row.
   */
+
+  await addCustomer.openAddCustomerPage();
+  await addCustomer.waitForAddCustomerPage();
+  await addCustomer.fillFirstNameField(firstName)
+  await addCustomer.fillLastNameField(lastName)
+  await addCustomer.fillPostCodeField(postalCode)
+  await addCustomer.clickAddCustomerButton()
+  await page.reload()
+  await addCustomer.clickCustomersListLink()
+  await addCustomer.elementTextDataEqual(customersListPage.getCustomerFirstName, firstName)
+  await addCustomer.elementTextDataEqual(customersListPage.getCustomerLastName, lastName)
+  await addCustomer.elementTextDataEqual(customersListPage.getCustomerPostCode, postalCode)
+  await addCustomer.elementTextDataEqual(customersListPage.getCustomerNumber, '')
+
+});
+
+
+test('New user is not created with Empty First name field', async ({ page }) => {
+  await addCustomer.openAddCustomerPage();
+  await addCustomer.waitForAddCustomerPage();
+  await addCustomer.fillLastNameField(lastName)
+  await addCustomer.fillPostCodeField(postalCode)
+  await addCustomer.clickAddCustomerButton()
+  await page.reload()
+  await addCustomer.clickCustomersListLink()
+  await addCustomer.elementTextDataNotEqual(customersListPage.getCustomerLastName, lastName)
+
+});
+
+
+test('New user is not created with Empty Last name field', async ({ page }) => {
+  await addCustomer.openAddCustomerPage();
+  await addCustomer.waitForAddCustomerPage();
+  await addCustomer.fillFirstNameField(firstName)
+  await addCustomer.fillPostCodeField(postalCode)
+  await addCustomer.clickAddCustomerButton()
+  await page.reload()
+  await addCustomer.clickCustomersListLink()
+  await addCustomer.elementTextDataNotEqual(customersListPage.getCustomerLastName, firstName)
+
 });
