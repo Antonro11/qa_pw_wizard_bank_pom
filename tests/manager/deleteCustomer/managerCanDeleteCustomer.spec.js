@@ -1,13 +1,13 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { AddCustomerPage } from '../../../src/pages/manager/AddCustomerPage';
 import { BankManagerMainPage } from '../../../src/pages/manager/BankManagerMainPage';
 import { CustomersListPage } from '../../../src/pages/manager/CustomersListPage';
 
-
-  const firstName = faker.person.firstName()
-  const lastName = faker.person.lastName()
-  const postCode = faker.location.zipCode()
+let firstName
+let lastName
+let postCode
+let addCustomerPage
 
 
 test.beforeEach(async ({ page }) => {
@@ -19,7 +19,11 @@ test.beforeEach(async ({ page }) => {
   4. Fill the Postal Code.
   5. Click [Add Customer].
   */
-const addCustomerPage = new AddCustomerPage(page)
+
+firstName = faker.person.firstName()
+lastName = faker.person.lastName()
+postCode = faker.location.zipCode()
+addCustomerPage = new AddCustomerPage(page)
 
   await addCustomerPage.openAddCustomerPage()
   await addCustomerPage.waitForAddCustomerPage()
@@ -27,11 +31,11 @@ const addCustomerPage = new AddCustomerPage(page)
   await addCustomerPage.fillLastNameField(lastName)
   await addCustomerPage.fillPostCodeField(postCode)
   await addCustomerPage.clickAddCustomerButton()
-
+  page.on('dialog', dialog => dialog.accept())
 });
 
 test('Assert manager can delete customer', async ({ page }) => {
-  const addCustomerPage = new AddCustomerPage(page)
+
   const bankManager = new BankManagerMainPage(page)
   const customerListPage = new CustomersListPage(page)
 
@@ -46,6 +50,7 @@ test('Assert manager can delete customer', async ({ page }) => {
 
   await bankManager.openManagerMainPage()
   await bankManager.clickCustomerListLink()
+  await expect(customerListPage.deleteCustomerButton).toBeVisible()
   await customerListPage.clickDeleteCustomerButton()
   await addCustomerPage.elementByTextHidden(lastName)
   await page.reload()

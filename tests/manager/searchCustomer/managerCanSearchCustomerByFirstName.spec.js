@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { BankManagerMainPage } from '../../../src/pages/manager/BankManagerMainPage';
 import { CustomersListPage } from '../../../src/pages/manager/CustomersListPage';
@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
   await addCustomerPage.fillLastNameField(lastName)
   await addCustomerPage.fillPostCodeField(postalCode)
   await addCustomerPage.clickAddCustomerButton()
-  await page.reload()
+  page.on('dialog', dialog => dialog.accept())
 
 });
 
@@ -38,7 +38,6 @@ test('Assert manager can search customer by First Name', async ({ page }) => {
 
   const bankManagerPage = new BankManagerMainPage(page)
   const customersListPage = new CustomersListPage(page)
-  const addCustomerPage = new AddCustomerPage(page)
 
   /* 
   Test:
@@ -48,10 +47,15 @@ test('Assert manager can search customer by First Name', async ({ page }) => {
   4. Assert no other rows is present in the table.
   */
 
+  
+  await bankManagerPage.openManagerMainPage()
+  await bankManagerPage.waitManagerMainPage()
   await bankManagerPage.clickCustomerListLink()
+
   await customersListPage.waitCustomerListPage()
   await customersListPage.fillSearchField(firstName)
-  await addCustomerPage.elementTextDataEqual(customersListPage.getCustomerFirstName, firstName)
-  await addCustomerPage.assertOneRowSearch()
+  //await customersListPage.elementTextDataEqual(customersListPage.getCustomerFirstName, firstName)
+  await expect(customersListPage.getCustomerFirstName).toHaveText(firstName)
+  await customersListPage.assertOneRowSearch()
 
 });

@@ -1,5 +1,4 @@
-import { test } from '@playwright/test';
-import { faker } from '@faker-js/faker';
+import { expect, test } from '@playwright/test';
 import { OpenAccountPage } from '../../../src/pages/manager/OpenAccountPage'
 
 
@@ -22,6 +21,7 @@ test('Assert manager can choose currencies for account', async ({ page }) => {
 
   await accountPage.openManagerAccount()
   await accountPage.waitForOpenManagerAccount()
+  await expect(accountPage.currency).toBeVisible()
   await accountPage.selectCurrency('Dollar')
   await accountPage.assertCurrency('Dollar')
   await accountPage.selectCurrency('Pound')

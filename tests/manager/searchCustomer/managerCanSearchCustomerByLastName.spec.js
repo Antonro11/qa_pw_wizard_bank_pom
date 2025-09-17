@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { BankManagerMainPage } from '../../../src/pages/manager/BankManagerMainPage';
 import { CustomersListPage } from '../../../src/pages/manager/CustomersListPage';
@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
   await addCustomerPage.fillLastNameField(lastName)
   await addCustomerPage.fillPostCodeField(postalCode)
   await addCustomerPage.clickAddCustomerButton()
-  await page.reload()
+  page.on('dialog', dialog => dialog.accept())
 
 });
 
@@ -50,7 +50,7 @@ test('Assert manager can search customer by Last Name', async ({ page }) => {
   await bankManagerPage.clickCustomerListLink()
   await customersListPage.waitCustomerListPage()
   await customersListPage.fillSearchField(lastName)
-  await addCustomerPage.elementTextDataEqual(customersListPage.getCustomerLastName, lastName)
-  await addCustomerPage.assertOneRowSearch()
+  await expect(customersListPage.getCustomerLastName).toHaveText(lastName)
+  await customersListPage.assertOneRowSearch()
 
 });

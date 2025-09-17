@@ -12,6 +12,10 @@ export class BankManagerMainPage {
     await this.page.goto('/angularJs-protractor/BankingProject/#/manager');
   }
 
+   async waitManagerMainPage() {
+    await this.page.waitForURL('/angularJs-protractor/BankingProject/#/manager');
+  }
+
   async clickCustomerListLink () {
     await this.customersListLink.click()
   }

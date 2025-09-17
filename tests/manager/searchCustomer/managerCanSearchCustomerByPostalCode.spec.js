@@ -1,4 +1,5 @@
 import { test } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { BankManagerMainPage } from '../../../src/pages/manager/BankManagerMainPage';
 import { CustomersListPage } from '../../../src/pages/manager/CustomersListPage';
@@ -31,7 +32,7 @@ test.beforeEach(async ({ page }) => {
   await addCustomerPage.fillLastNameField(lastName)
   await addCustomerPage.fillPostCodeField(postalCode)
   await addCustomerPage.clickAddCustomerButton()
-  await page.reload()
+  page.on('dialog', dialog => dialog.accept())
 
 });
 
@@ -51,7 +52,8 @@ test('Assert manager can search customer by Postal Code', async ({ page }) => {
   await bankManagerPage.clickCustomerListLink()
   await customersListPage.waitCustomerListPage()
   await customersListPage.fillSearchField(postalCode)
-  await addCustomerPage.elementTextDataEqual(customersListPage.getCustomerPostCode, postalCode)
-  await addCustomerPage.assertOneRowSearch()
+  await expect(customersListPage.getCustomerPostCode).toHaveText(postalCode)
+  await expect(customersListPage.getCustomerPostCode).toHaveText(postalCode)
+  await customersListPage.assertOneRowSearch()
 
 });

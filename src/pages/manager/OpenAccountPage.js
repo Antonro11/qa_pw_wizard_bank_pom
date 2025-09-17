@@ -22,12 +22,13 @@ export class OpenAccountPage {
     await this.currency.selectOption({ label: money});
   }
 
-  async assertCurrency (text) {
-    await expect(this.currency).toHaveValue(text);
-  }
+ async assertCurrency(expectedLabel) {
+  const selectedText = await this.currency.locator('option:checked').textContent()
+  expect(selectedText.trim()).toBe(expectedLabel)
+}
 
   async selectCustomer (person) {
-    await this.customer.selectOption(person)
+    await this.customer.selectOption({ label: person })
   }
 
   async clickProcessButton () {

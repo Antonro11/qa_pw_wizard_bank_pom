@@ -32,7 +32,7 @@ test.beforeEach(async ({ page }) => {
   await addCustomerPage.fillLastNameField(lastName)
   await addCustomerPage.fillPostCodeField(postCode)
   await addCustomerPage.clickAddCustomerButton()
-  await page.reload()
+  page.on('dialog', dialog => dialog.accept())
 
 });
 
@@ -58,10 +58,11 @@ test('Assert manager can add new customer', async ({ page }) => {
   */
 
   await bankManagerMainPage.clickAccountLink()
+  await accountPage.waitForOpenManagerAccount()
   await accountPage.selectCustomer(firstName +' '+lastName)
   await accountPage.selectCurrency('Dollar')
   await accountPage.clickProcessButton()
-  await page.reload()
+  page.on('dialog', d => d.accept())
   await bankManagerMainPage.clickCustomerListLink()
   await customersListPage.assertCustomerNumberNotEmpty()
 

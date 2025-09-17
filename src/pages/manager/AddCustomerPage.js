@@ -13,12 +13,12 @@ export class AddCustomerPage {
 
   async openAddCustomerPage() {
     await this.page.goto(
-      'angularJs-protractor/BankingProject/#/manager/addCust',
+      '/angularJs-protractor/BankingProject/#/manager/addCust',
     );
   }
 
   async waitForAddCustomerPage () {
-    await this.page.waitForURL('angularJs-protractor/BankingProject/#/manager/addCust')
+    await this.page.waitForURL('/angularJs-protractor/BankingProject/#/manager/addCust')
   }
 
   async fillFirstNameField (data) {
@@ -42,24 +42,8 @@ export class AddCustomerPage {
   }
 
 
-  async elementTextDataEqual (element, text) {
-    await expect(element).toHaveText(text)
-  }
-
-  async elementTextDataNotEqual (element, text) {
-    await expect(element).not.toHaveText(text)
-  }
-
-  async assertCustomerNumberEmpty () {
-    await expect(this.getCustomerNumber).toHaveText('')
-  }
-
   async elementByTextHidden(text) {
     await expect(this.page.getByText(text)).toBeHidden()
-  }
-
-  async assertOneRowSearch () {
-    await expect(this.page.locator('tbody tr').nth(1)).toBeHidden()
   }
 
 

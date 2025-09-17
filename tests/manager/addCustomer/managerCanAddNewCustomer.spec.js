@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { AddCustomerPage } from '../../../src/pages/manager/AddCustomerPage'
 import { CustomersListPage } from '../../../src/pages/manager/CustomersListPage';
@@ -62,25 +62,35 @@ test('Assert manager can add new customer', async ({ page }) => {
   await addCustomer.fillLastNameField(lastName)
   await addCustomer.fillPostCodeField(postalCode)
   await addCustomer.clickAddCustomerButton()
-  await page.reload()
+  page.on('dialog', d => d.accept())
   await addCustomer.clickCustomersListLink()
-  await addCustomer.elementTextDataEqual(customersListPage.getCustomerFirstName, firstName)
-  await addCustomer.elementTextDataEqual(customersListPage.getCustomerLastName, lastName)
-  await addCustomer.elementTextDataEqual(customersListPage.getCustomerPostCode, postalCode)
-  await addCustomer.elementTextDataEqual(customersListPage.getCustomerNumber, '')
+  await customersListPage.waitCustomerListPage()
+  await customersListPage.elementTextDataEqual(customersListPage.getCustomerFirstName, firstName)
+  await customersListPage.elementTextDataEqual(customersListPage.getCustomerLastName, lastName)
+  await customersListPage.elementTextDataEqual(customersListPage.getCustomerPostCode, postalCode)
+  await customersListPage.elementTextDataEqual(customersListPage.getCustomerNumber, '')
 
 });
 
 
 test('New user is not created with Empty First name field', async ({ page }) => {
+  await customersListPage.openCustomerListPage()
+  await customersListPage.waitCustomerListPage()
+  await expect(page.locator('tbody')).toBeVisible()
+
+  const countRawBeforeAddCustomer = await customersListPage.allRaws.count()
+
   await addCustomer.openAddCustomerPage();
   await addCustomer.waitForAddCustomerPage();
   await addCustomer.fillLastNameField(lastName)
   await addCustomer.fillPostCodeField(postalCode)
   await addCustomer.clickAddCustomerButton()
-  await page.reload()
+  page.on('dialog', d => d.accept())
   await addCustomer.clickCustomersListLink()
-  await addCustomer.elementTextDataNotEqual(customersListPage.getCustomerLastName, lastName)
+  await customersListPage.waitCustomerListPage()
+
+  const countRawAfterAddCustomer = await customersListPage.allRaws.count()
+  expect(countRawBeforeAddCustomer).toBe(countRawAfterAddCustomer)
 
 });
 
@@ -91,7 +101,8 @@ test('New user is not created with Empty Last name field', async ({ page }) => {
   await addCustomer.fillFirstNameField(firstName)
   await addCustomer.fillPostCodeField(postalCode)
   await addCustomer.clickAddCustomerButton()
-  await page.reload()
+  page.on('dialog', d => d.accept())
   await addCustomer.clickCustomersListLink()
-  await addCustomer.elementTextDataNotEqual(customersListPage.getCustomerLastName, firstName)
+  await customersListPage.waitCustomerListPage()
+  await customersListPage.elementTextDataNotEqual(customersListPage.getCustomerFirstName, firstName)
 });

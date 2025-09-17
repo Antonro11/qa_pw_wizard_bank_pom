@@ -20,6 +20,7 @@ test('Assert manager can Login', async ({ page }) => {
   await bankHomePage.openLoginPage()
   await bankHomePage.waitLoginPage()
   await bankHomePage.clickBankManagerLoginButton()
+  await bankManagerMainPage.waitManagerMainPage()
   await bankManagerMainPage.elementVisible(bankManagerMainPage.addCustomerLink)
   await bankManagerMainPage.elementVisible(bankManagerMainPage.openAccountLink)
   await bankManagerMainPage.elementVisible(bankManagerMainPage.customersListLink)

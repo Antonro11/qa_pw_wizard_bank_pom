@@ -27,8 +27,6 @@ export class CustomerAccountPage {
       'Transaction Failed. You can not withdraw amount more than the balance.',
     );
     this.logoutButton = page.getByRole('button', { name: 'Logout' });
-    this.withdrawField = page.getByPlaceholder('amount')
-    this.balance = page.locator('div.center').filter({hasText:'Balance'}).locator('strong').nth(1)
   }
 
   async open() {
@@ -57,7 +55,7 @@ export class CustomerAccountPage {
   }
 
   async fillAmountInputField(amount) {
-    await this.amountInputField.fill(String(amount));
+    await this.amountInputField.fill(amount);
   }
 
   async clickDepositFormButton() {
@@ -78,18 +76,6 @@ export class CustomerAccountPage {
 
   async assertWithdrawNoBalanceErrorMessageIsVisible() {
     await expect(this.withdrawNoBalanceErrorMessage).toBeVisible();
-  }
-
-  async fillWithdrawField (text) {
-    await this.withdrawField.fill(String(text))
-  }
-
-  async balanceVisible () {
-    await expect(this.balance).toBeVisible()
-  }
-
-  async returnCurrentBalance () {
-    return await this.balance.innerText()
   }
 
 }
